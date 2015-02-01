@@ -73,7 +73,39 @@
     { Name: 'Martin Odersky', Github: 'movax10' }
   ];
 
-  var studentsTable = new Table(objectToRows(students)).draw();
+function addNewHW(students) {  //доюавляем ещё домашки
+	//console.log(students);
+	var student;
+	for (i = 0; i < students.length; i++) {  // перебираем всех студентов...
+		console.log(students[i]);
+		student = students[i];
+		for (var oneHome in homeWorks) { // перебираем все домашки
+			var results = {};
+			//console.log(homeWorks);
+			for (var title in homeWorks) {
+				results[title] = githubBuild(homeWorks[title], githubResults).build;
+			}
+			//console.log(results[oneHome][student.Github]);
+			//console.log(oneHome, student.Github)
+			if (results[oneHome][student.Github] == 'success'){
+				student[oneHome] = 'ok';
+			}else if(results[oneHome][student.Github] == 'failure'){
+				student[oneHome] = 'no';
+			}else{
+				student[oneHome] = '-';
+			}   
+		}
+	}
+	return students;
+}
 
-  document.getElementById('students-list').innerHTML = studentsTable;
+function githubBuild(repoName, githubResults) {
+	for (var i = 0; i < githubResults.length; i++) {
+		if (githubResults[i].repo === repoName) return githubResults[i];
+	}
+}
+
+//console.log(students);
+var studentsTable = new Table(objectToRows(addNewHW(students))).draw();
+document.getElementById('students-list').innerHTML = studentsTable;
 })();
